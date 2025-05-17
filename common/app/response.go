@@ -1,8 +1,8 @@
 package app
 
 import (
-	"your-module-name/common/errcode"
-	log "your-module-name/common/logger"
+	"github.com/faiz/llm-code-review/common/errcode"
+	log "github.com/faiz/llm-code-review/common/logger"
 	"github.com/gin-gonic/gin"
 )
 

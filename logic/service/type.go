@@ -2,8 +2,8 @@ package appService
 
 import (
 	"context"
-	"your-module-name/api/reply"
-	"your-module-name/api/request"
+	"github.com/faiz/llm-code-review/api/reply"
+	"github.com/faiz/llm-code-review/api/request"
 )
 
 type DemoAppService interface {

@@ -1,4 +1,4 @@
-module your-module-name
+module github.com/faiz/llm-code-review
 
 go 1.24.1
 

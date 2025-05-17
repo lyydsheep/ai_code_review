@@ -2,10 +2,10 @@ package dao
 
 import (
 	"context"
-	"your-module-name/common/errcode"
-	"your-module-name/common/util"
-	"your-module-name/dal/model"
-	"your-module-name/logic/domain"
+	"github.com/faiz/llm-code-review/common/errcode"
+	"github.com/faiz/llm-code-review/common/util"
+	"github.com/faiz/llm-code-review/dal/model"
+	"github.com/faiz/llm-code-review/logic/domain"
 )
 
 type DemoDAOV1 struct {

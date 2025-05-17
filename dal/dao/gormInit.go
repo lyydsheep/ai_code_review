@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"your-module-name/config"
-	"your-module-name/dal/model"
+	"github.com/faiz/llm-code-review/config"
+	"github.com/faiz/llm-code-review/dal/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"time"

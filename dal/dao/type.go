@@ -2,8 +2,8 @@ package dao
 
 import (
 	"context"
-	"your-module-name/dal/model"
-	"your-module-name/logic/domain"
+	"github.com/faiz/llm-code-review/dal/model"
+	"github.com/faiz/llm-code-review/logic/domain"
 )
 
 type DemoDAO interface {

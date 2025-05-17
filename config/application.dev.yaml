@@ -1,6 +1,6 @@
 app:
   env: "dev"
-  name: "your-app-name"
+  name: "llm-code-review"
   log:
     path: "/path/to/your/log/file.log"
     maxSize: 100

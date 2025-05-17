@@ -3,8 +3,8 @@ package library
 import (
 	"context"
 	"encoding/json"
-	log "your-module-name/common/logger"
-	"your-module-name/common/util/httptool"
+	log "github.com/faiz/llm-code-review/common/logger"
+	"github.com/faiz/llm-code-review/common/util/httptool"
 )
 
 // 对接 ipwhois.io 的Lib

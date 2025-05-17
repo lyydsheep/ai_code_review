@@ -3,13 +3,13 @@
 package main
 
 import (
-	"your-module-name/api/controller"
-	"your-module-name/api/router"
-	"your-module-name/common/middleware"
-	"your-module-name/dal/cache"
-	"your-module-name/dal/dao"
-	"your-module-name/logic/appService"
-	"your-module-name/logic/domainService"
+	"github.com/faiz/llm-code-review/api/controller"
+	"github.com/faiz/llm-code-review/api/router"
+	"github.com/faiz/llm-code-review/common/middleware"
+	"github.com/faiz/llm-code-review/dal/cache"
+	"github.com/faiz/llm-code-review/dal/dao"
+	"github.com/faiz/llm-code-review/logic/appService"
+	"github.com/faiz/llm-code-review/logic/domainService"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 )

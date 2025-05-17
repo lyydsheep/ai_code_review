@@ -2,12 +2,12 @@ package domainService
 
 import (
 	"context"
-	"your-module-name/common/errcode"
-	log "your-module-name/common/logger"
-	"your-module-name/common/util"
-	"your-module-name/dal/cache"
-	"your-module-name/dal/dao"
-	"your-module-name/logic/domain"
+	"github.com/faiz/llm-code-review/common/errcode"
+	log "github.com/faiz/llm-code-review/common/logger"
+	"github.com/faiz/llm-code-review/common/util"
+	"github.com/faiz/llm-code-review/dal/cache"
+	"github.com/faiz/llm-code-review/dal/dao"
+	"github.com/faiz/llm-code-review/logic/domain"
 )
 
 type DemoDomainServiceV1 struct {

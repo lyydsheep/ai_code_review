@@ -1,7 +1,7 @@
 package app
 
 import (
-	"your-module-name/config"
+	"github.com/faiz/llm-code-review/config"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

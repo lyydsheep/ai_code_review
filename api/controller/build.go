@@ -3,11 +3,11 @@ package controller
 // controller 包中文件放置handler 方法
 
 import (
-	"your-module-name/api/request"
-	"your-module-name/common/app"
-	"your-module-name/common/errcode"
-	"your-module-name/library"
-	"your-module-name/logic/service"
+	"github.com/faiz/llm-code-review/api/request"
+	"github.com/faiz/llm-code-review/common/app"
+	"github.com/faiz/llm-code-review/common/errcode"
+	"github.com/faiz/llm-code-review/library"
+	"github.com/faiz/llm-code-review/logic/service"
 	"github.com/gin-gonic/gin"
 )
 

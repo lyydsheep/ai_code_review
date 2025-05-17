@@ -1,11 +1,11 @@
 package main
 
 import (
-	"your-module-name/common/enum"
-	log "your-module-name/common/logger"
-	"your-module-name/config"
-	"your-module-name/dal/cache"
-	"your-module-name/dal/dao"
+	"github.com/faiz/llm-code-review/common/enum"
+	log "github.com/faiz/llm-code-review/common/logger"
+	"github.com/faiz/llm-code-review/config"
+	"github.com/faiz/llm-code-review/dal/cache"
+	"github.com/faiz/llm-code-review/dal/dao"
 	"github.com/gin-gonic/gin"
 )
 

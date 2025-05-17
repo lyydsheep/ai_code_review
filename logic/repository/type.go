@@ -2,7 +2,7 @@ package domainService
 
 import (
 	"context"
-	"your-module-name/logic/domain"
+	"github.com/faiz/llm-code-review/logic/domain"
 )
 
 // DemoDomainService 保持依赖注入风格

@@ -2,7 +2,7 @@ package cache
 
 import (
 	"context"
-	"your-module-name/config"
+	"github.com/faiz/llm-code-review/config"
 	"github.com/redis/go-redis/v9"
 	"time"
 )

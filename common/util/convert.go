@@ -2,7 +2,7 @@ package util
 
 import (
 	"errors"
-	"your-module-name/common/enum"
+	"github.com/faiz/llm-code-review/common/enum"
 	"github.com/jinzhu/copier"
 	"regexp"
 	"time"

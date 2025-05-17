@@ -2,7 +2,7 @@ package dao
 
 import (
 	"context"
-	log "your-module-name/common/logger"
+	log "github.com/faiz/llm-code-review/common/logger"
 	"gorm.io/gorm/logger"
 	"time"
 )

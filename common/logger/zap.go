@@ -1,8 +1,8 @@
 package log
 
 import (
-	"your-module-name/common/enum"
-	"your-module-name/config"
+	"github.com/faiz/llm-code-review/common/enum"
+	"github.com/faiz/llm-code-review/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"

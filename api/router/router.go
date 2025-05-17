@@ -3,7 +3,7 @@ package router
 // 路由注册相关的, 都放在router 包下
 
 import (
-	"your-module-name/api/controller"
+	"github.com/faiz/llm-code-review/api/controller"
 	"github.com/gin-gonic/gin"
 )
 

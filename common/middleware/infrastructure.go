@@ -3,8 +3,8 @@ package middleware
 import (
 	"bytes"
 	"errors"
-	log "your-module-name/common/logger"
-	"your-module-name/common/util"
+	log "github.com/faiz/llm-code-review/common/logger"
+	"github.com/faiz/llm-code-review/common/util"
 	"github.com/gin-gonic/gin"
 	"io"
 	"net"

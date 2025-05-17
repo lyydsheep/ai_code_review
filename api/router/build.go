@@ -1,7 +1,7 @@
 package router
 
 import (
-	"your-module-name/api/controller"
+	"github.com/faiz/llm-code-review/api/controller"
 	"github.com/gin-gonic/gin"
 )
 

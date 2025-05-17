@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"your-module-name/common/enum"
-	"your-module-name/common/errcode"
-	log "your-module-name/common/logger"
-	"your-module-name/logic/domain"
+	"github.com/faiz/llm-code-review/common/enum"
+	"github.com/faiz/llm-code-review/common/errcode"
+	log "github.com/faiz/llm-code-review/common/logger"
+	"github.com/faiz/llm-code-review/logic/domain"
 )
 
 type DemoCache interface {

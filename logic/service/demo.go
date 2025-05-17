@@ -2,12 +2,12 @@ package appService
 
 import (
 	"context"
-	"your-module-name/api/reply"
-	"your-module-name/api/request"
-	"your-module-name/common/errcode"
-	"your-module-name/common/util"
-	"your-module-name/logic/domain"
-	"your-module-name/logic/repository"
+	"github.com/faiz/llm-code-review/api/reply"
+	"github.com/faiz/llm-code-review/api/request"
+	"github.com/faiz/llm-code-review/common/errcode"
+	"github.com/faiz/llm-code-review/common/util"
+	"github.com/faiz/llm-code-review/logic/domain"
+	"github.com/faiz/llm-code-review/logic/repository"
 )
 
 type DemoAppServiceV1 struct {
