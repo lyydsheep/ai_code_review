@@ -33,20 +33,10 @@ func (a *AppError) Error() string {
 	if a == nil {
 		return ""
 	}
-	formatterErr := struct {
-		Code     int    `json:"code"`
-		Msg      string `json:"msg"`
-		Cause    string `json:"cause"`
-		Occurred string `json:"occurred"`
-	}{
-		Code:     a.code,
-		Msg:      a.msg,
-		Occurred: a.occurred,
+	bytes, err := json.Marshal(a.toStructuredError())
+	if err != nil {
+		return fmt.Sprintf("Error() is error: json marshal error: %v", err)
 	}
-	if a.cause != nil {
-		formatterErr.Cause = a.cause.Error()
-	}
-	bytes, _ := json.Marshal(formatterErr)
 	return string(bytes)
 }
 
@@ -54,29 +44,29 @@ func (a *AppError) String() string {
 	return a.Error()
 }
 
-func (a *AppError) GetCode() int {
+func (a *AppError) Code() int {
 	return a.code
 }
 
-func (a *AppError) GetMsg() string {
+func (a *AppError) Msg() string {
 	return a.msg
 }
 
 func (a *AppError) HttpStatusCode() int {
 	switch a.code {
-	case Success.GetCode():
+	case Success.Code():
 		return http.StatusOK
-	case ErrServer.GetCode():
+	case ErrServer.Code():
 		return http.StatusInternalServerError
-	case ErrParams.GetCode():
+	case ErrParams.Code():
 		return http.StatusBadRequest
-	case ErrNotFound.GetCode():
+	case ErrNotFound.Code():
 		return http.StatusNotFound
-	case ErrTooManyRequests.GetCode():
+	case ErrTooManyRequests.Code():
 		return http.StatusTooManyRequests
-	case ErrToken.GetCode():
+	case ErrToken.Code():
 		return http.StatusUnauthorized
-	case ErrForbidden.GetCode():
+	case ErrForbidden.Code():
 		return http.StatusForbidden
 	default:
 		return http.StatusInternalServerError
@@ -106,4 +96,50 @@ func getErrorInfo() string {
 	pc, file, line, _ := runtime.Caller(2)
 	funcName := runtime.FuncForPC(pc).Name()
 	return fmt.Sprintf("funName: %s file: %s line: %d", funcName, file, line)
+}
+
+func (e *AppError) Clone() *AppError {
+	n := new(AppError)
+	n.code = e.code
+	n.msg = e.msg
+	n.cause = e.cause
+	n.occurred = e.occurred
+	return n
+}
+
+// AppendMsg 在Code不变的情况下, 在预定义Msg的基础上追加错误信息
+func (e *AppError) AppendMsg(msg string) *AppError {
+	n := e.Clone()
+	n.msg = fmt.Sprintf("%s, %s", e.msg, msg)
+	return n
+}
+
+// SetMsg 在Code不变的情况下, 重新设置错误信息, 覆盖预定义的Msg
+func (e *AppError) SetMsg(msg string) *AppError {
+	n := e.Clone()
+	n.msg = msg
+	return n
+}
+
+type formattedErr struct {
+	Code     int         `json:"code"`
+	Msg      string      `json:"msg"`
+	Cause    interface{} `json:"cause"`
+	Occurred string      `json:"occurred"`
+}
+
+// toStructuredError 在JSON Encode 前把Error进行格式化
+func (e *AppError) toStructuredError() *formattedErr {
+	fe := new(formattedErr)
+	fe.Code = e.Code()
+	fe.Msg = e.Msg()
+	fe.Occurred = e.occurred
+	if e.cause != nil {
+		if appErr, ok := e.cause.(*AppError); ok {
+			fe.Cause = appErr.toStructuredError()
+		} else {
+			fe.Cause = e.cause.Error()
+		}
+	}
+	return fe
 }

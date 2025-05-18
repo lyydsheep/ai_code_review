@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"github.com/faiz/llm-code-review/common/errcode"
 	log "github.com/faiz/llm-code-review/common/logger"
 	"github.com/gin-gonic/gin"
@@ -28,8 +29,8 @@ func (r *response) SetPagination(pagination *Pagination) *response {
 }
 
 func (r *response) Success(data any) {
-	r.Code = errcode.Success.GetCode()
-	r.Msg = errcode.Success.GetMsg()
+	r.Code = errcode.Success.Code()
+	r.Msg = errcode.Success.Msg()
 	if _, ok := r.c.Get("traceId"); ok {
 		r.RequestId = r.c.GetString("traceId")
 	}
@@ -41,12 +42,16 @@ func (r *response) SuccessOk() {
 	r.Success("")
 }
 
-func (r *response) Error(err *errcode.AppError) {
-	r.Code = err.GetCode()
-	r.Msg = err.GetMsg()
+func (r *response) Error(err error) {
+	appErr := errcode.ErrServer.Clone()
+	if !errors.As(err, &appErr) {
+		appErr = errcode.ErrServer.WithCause(err)
+	}
+	r.Code = appErr.Code()
+	r.Msg = appErr.Msg()
 	if _, ok := r.c.Get("traceId"); ok {
 		r.RequestId = r.c.GetString("traceId")
 	}
 	log.New(r.c).Error("api_response_err", "err", err)
-	r.c.JSON(err.HttpStatusCode(), r)
+	r.c.JSON(appErr.HttpStatusCode(), r)
 }
