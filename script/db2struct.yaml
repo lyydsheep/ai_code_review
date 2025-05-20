@@ -1,0 +1,19 @@
+version: "0.1"
+database:
+  dsn: "root:root@tcp(host:3306)/my_dev?charset=utf8mb4&parseTime=true&loc=Local"
+  db: "mysql"
+  tables:
+    - "usr_users"
+  outPath: "../dal/dao"
+  # query code file name, default: gen.go
+  outFile: ""
+  # generate unit test for query code
+  withUnitTest: false
+  # generated model code's package name
+  modelPkgName: "model"
+  # generate with pointer when field is nullable
+  fieldNullable: false
+  # generate field with gorm index tag
+  fieldWithIndexTag: true
+  # generate field with gorm column type tag
+  fieldWithTypeTag: true

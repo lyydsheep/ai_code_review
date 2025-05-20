@@ -16,6 +16,7 @@ import (
 // 请求头
 // 请求体
 // traceId
+// TODO 可以加上鉴权
 
 type requestOption struct {
 	ctx     context.Context
