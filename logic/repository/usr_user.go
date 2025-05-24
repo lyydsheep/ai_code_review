@@ -1,67 +1,83 @@
-package domainService
+package repository
 
 import (
 	"context"
 	"github.com/faiz/llm-code-review/common/errcode"
-	log "github.com/faiz/llm-code-review/common/logger"
-	"github.com/faiz/llm-code-review/common/util"
 	"github.com/faiz/llm-code-review/dal/cache"
 	"github.com/faiz/llm-code-review/dal/dao"
+	"github.com/faiz/llm-code-review/dal/model"
 	"github.com/faiz/llm-code-review/logic/domain"
 )
 
-type DemoDomainServiceV1 struct {
-	Dao   dao.DemoDAO
-	Cache cache.DemoCache
+type UsrUserRepositoryV1 struct {
+	Query *dao.Query
+	Cache cache.Cache
 }
 
-func NewDemoDomainServiceV1(d dao.DemoDAO, cache cache.DemoCache) *DemoDomainServiceV1 {
-	return &DemoDomainServiceV1{
-		Dao:   d,
-		Cache: cache,
+func (repo *UsrUserRepositoryV1) GetUserByUsername(ctx context.Context, username string) (model.UsrUser, error) {
+	qUser := repo.Query.UsrUser
+	entity, err := qUser.WithContext(ctx).Where(qUser.Username.Eq(username)).First()
+	if err != nil {
+		return model.UsrUser{}, errcode.Wrap("获取用户失败", err)
 	}
+	return *entity, nil
 }
 
-func (ds *DemoDomainServiceV1) GetDemos(c context.Context) ([]domain.DemoOrder, error) {
-	demos, err := ds.Dao.FindAllDemo(c)
+func (repo *UsrUserRepositoryV1) GetUsers(ctx context.Context) ([]domain.UsrUser, error) {
+	qUser := repo.Query.UsrUser
+	entities, err := qUser.WithContext(ctx).Find()
 	if err != nil {
-		err = errcode.Wrap("query entity error", err)
+		return []domain.UsrUser{}, errcode.Wrap("获取用户列表失败", err)
 	}
-	res := make([]domain.DemoOrder, 0, len(demos))
-	for i := range demos {
-		res = append(res, domain.DemoOrder{
-			Id:           demos[i].Id,
-			OrderId:      demos[i].OrderId,
-			UserId:       demos[i].UserId,
-			OrderGoodsId: demos[i].OrderGoodsId,
-			BillMoney:    demos[i].BillMoney,
-			State:        demos[i].State,
-			PaidAt:       demos[i].PaidAt,
-		})
+	domains := make([]domain.UsrUser, len(entities))
+	for i, entity := range entities {
+		domains[i] = domain.UsrUserEntityToDomain(*entity)
 	}
-	return res, err
+	return domains, nil
 }
 
-// CreateDemoOrder 创建订单
-// 核心业务逻辑
-func (ds *DemoDomainServiceV1) CreateDemoOrder(c context.Context, order *domain.DemoOrder) (*domain.DemoOrder, error) {
-	order.OrderId = "this is random Id"
-	demo, err := ds.Dao.CreateDemoOrder(c, order)
+func (repo *UsrUserRepositoryV1) GetUserByID(ctx context.Context, id int64) (domain.UsrUser, error) {
+	qUser := repo.Query.UsrUser
+	entity, err := qUser.WithContext(ctx).Where(qUser.ID.Eq(id)).First()
 	if err != nil {
-		return nil, errcode.Wrap("create entity error", err)
+		return domain.UsrUser{}, errcode.Wrap("获取用户失败", err)
 	}
-	// do something...
-	if err = util.Convert(order, demo); err != nil {
-		return nil, errcode.Wrap("copy entity error", err)
-	}
-	if err = ds.Cache.Set(c, order); err != nil {
-		return nil, errcode.Wrap("cache entity error", err)
-	}
-	log.New(c).Info("create order success", "orderId", order.OrderId)
-	data, err := ds.Cache.Get(c, order.OrderId)
+	return domain.UsrUserEntityToDomain(*entity), nil
+}
+
+func (repo *UsrUserRepositoryV1) CreateUser(ctx context.Context, user domain.UsrUser) (domain.UsrUser, error) {
+	entity := domain.UsrUserDomainToEntity(user)
+	qUser := repo.Query.UsrUser
+	err := qUser.WithContext(ctx).Create(&entity)
 	if err != nil {
-		return nil, errcode.Wrap("get entity error", err)
+		return domain.UsrUser{}, errcode.Wrap("创建用户失败", err)
 	}
-	log.New(c).Info("get order from cache", "orderId", order.OrderId, "data", data)
-	return order, nil
+	user = domain.UsrUserEntityToDomain(entity)
+	return user, nil
+}
+
+func (repo *UsrUserRepositoryV1) UpdateUser(ctx context.Context, user domain.UsrUser) (domain.UsrUser, error) {
+	entity := domain.UsrUserDomainToEntity(user)
+	qUser := repo.Query.UsrUser
+	_, err := qUser.WithContext(ctx).Where(qUser.ID.Eq(entity.ID)).Updates(&entity)
+	if err != nil {
+		return domain.UsrUser{}, errcode.Wrap("更新用户失败", err)
+	}
+	return user, nil
+}
+
+func (repo *UsrUserRepositoryV1) DeleteUser(ctx context.Context, id int64) error {
+	qUser := repo.Query.UsrUser
+	_, err := qUser.WithContext(ctx).Where(qUser.ID.Eq(id)).Delete()
+	if err != nil {
+		return errcode.Wrap("删除用户失败", err)
+	}
+	return nil
+}
+
+func NewUsrUserRepositoryV1(q *dao.Query, c cache.Cache) UsrUserRepository {
+	return &UsrUserRepositoryV1{
+		Query: q,
+		Cache: c,
+	}
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/faiz/llm-code-review/logic/domain"
 )
 
-type DemoCache interface {
+type Cache interface {
 	Get(ctx context.Context, orderId string) (*domain.DemoOrder, error)
 	Set(ctx context.Context, order *domain.DemoOrder) error
 }

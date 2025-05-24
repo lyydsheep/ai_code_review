@@ -87,9 +87,11 @@ func Wrap(msg string, err error) *AppError {
 // WithCause 复用预定好的错误信息
 // 使用于错误码定义地比较详细的项目
 func (a *AppError) WithCause(err error) *AppError {
-	a.cause = err
-	a.occurred = getErrorInfo()
-	return a
+	// 创建新的err，否则有并发问题
+	newErr := a.Clone()
+	newErr.cause = err
+	newErr.occurred = getErrorInfo()
+	return newErr
 }
 
 func getErrorInfo() string {

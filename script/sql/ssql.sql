@@ -7,3 +7,12 @@ create table if not exists usr_users(
     aes_key  varchar(2048) default '' not null comment '对称加密密钥'
 );
 
+alter table usr_users
+    add gmt_create timestamp default CURRENT_TIMESTAMP not null;
+
+alter table usr_users
+    add gmt_update timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP;
+
+create unique index usr_users_username_index
+    on usr_users (username);
+

@@ -1,4 +1,4 @@
-package controller
+package handler
 
 import (
 	"github.com/faiz/llm-code-review/api/request"
