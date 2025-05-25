@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// 单例模式
 var (
 	_RedisClient *redis.Client
 )

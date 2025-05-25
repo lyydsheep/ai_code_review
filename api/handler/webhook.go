@@ -12,8 +12,8 @@ type WebhookHandler struct {
 	svc service.WebHookService
 }
 
-func NewWebhookHandler(svc service.WebHookService) *WebhookHandler {
-	return &WebhookHandler{
+func NewWebhookHandler(svc service.WebHookService) WebhookHandler {
+	return WebhookHandler{
 		svc: svc,
 	}
 }

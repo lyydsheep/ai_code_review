@@ -2,7 +2,6 @@ package dao
 
 import (
 	"github.com/faiz/llm-code-review/config"
-	"github.com/faiz/llm-code-review/dal/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"time"
@@ -12,6 +11,10 @@ var (
 	dbMaster *gorm.DB
 	dbSlave  *gorm.DB
 )
+
+func NewQuery() *Query {
+	return Use(DB())
+}
 
 func DB() *gorm.DB {
 	return dbSlave
@@ -24,9 +27,9 @@ func DBMaster() *gorm.DB {
 func InitDB() {
 	dbMaster = initDB(&config.DB.Master)
 	dbSlave = initDB(&config.DB.Slave)
-	if err := dbMaster.AutoMigrate(&model.DemoOrder{}); err != nil {
-		panic(err)
-	}
+	//if err := dbMaster.AutoMigrate(&model.DemoOrder{}); err != nil {
+	//	panic(err)
+	//}
 }
 
 func initDB(option *config.DBConfigOptions) *gorm.DB {
