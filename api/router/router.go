@@ -12,7 +12,7 @@ func RegisterRoutersAndMiddleware(webhook handler.WebhookHandler, fs ...gin.Hand
 	RegisterMiddleware(s, fs...)
 
 	g := s.Group("/")
-	registerBuild(g, webhook)
+	registerWebhook(g, webhook)
 	return s
 }
 

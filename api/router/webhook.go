@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func registerBuild(s *gin.RouterGroup, webhook handler.WebhookHandler) {
+func registerWebhook(s *gin.RouterGroup, webhook handler.WebhookHandler) {
 	g := s.Group("/webhook")
 	g.POST("/event", webhook.ProcessHook)
 }

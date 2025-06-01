@@ -39,3 +39,7 @@ type RedisConfig struct {
 	DB       int    `mapstructure:"db"`
 	PoolSize int    `mapstructure:"poolSize"`
 }
+
+type KafkaConfig struct {
+	Brokers []string `mapstructure:"brokers"`
+}

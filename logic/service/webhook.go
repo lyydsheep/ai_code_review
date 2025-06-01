@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/faiz/llm-code-review/api/request"
 	"github.com/faiz/llm-code-review/common/errcode"
@@ -16,17 +15,17 @@ type WebHookServiceV1 struct {
 	UsrUserRepository repository.UsrUserRepository
 }
 
-func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.HookRequest) error {
+func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.HookRequest) (string, error) {
 	// TODO
 	// 查表获取 token 信息
 	user, err := svc.UsrUserRepository.GetUserByUsername(ctx, hook.UserName)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	tokenBytes, err := util.DecryptAES(user.Token, []byte("1234567890123456"))
 	if err != nil {
-		return errcode.ErrServer.WithCause(err).AppendMsg("Failed to decrypt token")
+		return "", errcode.ErrServer.WithCause(err).AppendMsg("Failed to decrypt token")
 	}
 	token := string(tokenBytes)
 
@@ -39,17 +38,14 @@ func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.Hook
 		}))
 	if err != nil {
 		log.New(ctx).Error("Failed to get compare: %v", err)
-		return errcode.ErrServer.WithCause(err).AppendMsg("Failed to get compare")
+		return "", errcode.ErrServer.WithCause(err).AppendMsg("Failed to get compare")
 	}
 	if respCode != 200 {
 		log.New(ctx).Error("Failed to get compare: %v", err)
-		return errcode.ErrServer.WithCause(err).AppendMsg("Failed to get compare")
+		return "", errcode.ErrServer.WithCause(err).AppendMsg("Failed to get compare")
 	}
 
-	diff := string(respBody)
-	// 放入 mq 中
-	
-	return nil
+	return string(respBody), nil
 }
 
 func joinURL(username, repository, compare string) string {
