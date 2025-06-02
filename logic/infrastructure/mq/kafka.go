@@ -1,11 +1,10 @@
-package factory
+package mq
 
 import (
 	"context"
 	"github.com/IBM/sarama"
 	"github.com/faiz/llm-code-review/common/errcode"
 	log "github.com/faiz/llm-code-review/common/logger"
-	"github.com/faiz/llm-code-review/logic/service"
 	"time"
 )
 
@@ -73,7 +72,10 @@ func newConfig(options ...Option) *sarama.Config {
 	return conf
 }
 
-func newKafkaProducer(proConf ProducerConfig) service.MQService {
+func newKafkaProducer(proConf ProducerConfig) Client {
+	if proConf.Timeout <= 0 {
+		proConf.Timeout = 10 * time.Second
+	}
 	config := newConfig(WithTimeout(proConf.Timeout), WithReturnSuccess(), WithWaitForAll())
 	client, err := sarama.NewClient(proConf.Brokers, config)
 	if err != nil {

@@ -1,7 +1,7 @@
-package factory
+package mq
 
 import (
-	"github.com/faiz/llm-code-review/logic/service"
+	"context"
 	"time"
 )
 
@@ -11,11 +11,16 @@ type ProducerConfig struct {
 	Timeout time.Duration // 超时设置
 }
 
-func NewMessageProducer(config ProducerConfig) service.MQService {
+func NewMessageProducer(config ProducerConfig) Client {
 	switch config.Type {
 	case "kafka":
 		return newKafkaProducer(config)
 	default:
 		panic("unknown mq type: " + config.Type)
 	}
+}
+
+type Client interface {
+	Send(ctx context.Context, destination string, message string) error
+	Close() bool
 }
