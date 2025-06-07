@@ -18,7 +18,7 @@ type AppError struct {
 
 func newError(code int, msg string) *AppError {
 	if _, duplicated := codes[code]; duplicated {
-		panic(fmt.Sprintf("the code %s already existed", code))
+		panic(fmt.Sprintf("the code %d already existed", code))
 	}
 	return &AppError{
 		code: code,

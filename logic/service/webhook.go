@@ -20,7 +20,6 @@ func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.Hook
 	if err != nil {
 		return err
 	}
-
 	// 获取 diff 信息
 	diff, err := svc.Github.GetDiff(ctx, user, *hook)
 	if err != nil {
@@ -30,7 +29,7 @@ func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.Hook
 	// 发送给消费者
 	// TODO 根据用户类型 选择不同的队列
 	// 实现优先级机制
-	if err = svc.Kafka.Send(ctx, "code-review", diff); err != nil {
+	if err = svc.Kafka.Send(ctx, "anonymous-code-review", diff); err != nil {
 		return err
 	}
 
