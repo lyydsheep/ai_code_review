@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek-R1 人工智能助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(0, 0, 30, 0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header {
+            background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .date-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+        }
+
+        main {
+            padding: 40px;
+        }
+
+        .intro {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s, background 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #4facfe;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-card h3 i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .feature-card p {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .capabilities {
+            margin-top: 50px;
+        }
+
+        .capabilities h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #00f2fe;
+        }
+
+        .capability-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .capability-item {
+            background: rgba(79, 172, 254, 0.15);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+        }
+
+        footer {
+            background: rgba(0, 0, 20, 0.9);
+            padding: 25px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .company {
+            color: #00f2fe;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            main {
+                padding: 30px 20px;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(79, 172, 254, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(79, 172, 254, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 172, 254, 0); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="date-badge">2025年6月7日 星期六</div>
+        <div class="logo pulse">R1</div>
+        <h1>DeepSeek-R1</h1>
+        <p class="subtitle">深度求索公司开发的新一代人工智能助手</p>
+    </header>
+
+    <main>
+        <div class="intro">
+            <p>你好！我是DeepSeek-R1，一个由深度求索公司开发的人工智能助手。我的使命是帮助人类更高效地获取知识、解决问题和激发创造力。</p>
+            <p>我基于先进的深度学习技术构建，拥有强大的自然语言理解和生成能力，能够处理各种复杂的任务和问题。</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3><i>🧠</i> 核心特性</h3>
+                <p>我具备强大的语言理解与生成能力，能够处理复杂的逻辑推理、文本创作、代码编写和学术研究等多种任务。</p>
+            </div>
+
+            <div class="feature-card">
+                <h3><i>🌐</i> 知识范围</h3>
+                <p>我的知识库涵盖了截至2024年7月的广泛领域，包括科学技术、文化艺术、历史哲学等，并持续更新。</p>
+            </div>
+
+            <div class="feature-card">
+                <h3><i>💡</i> 设计理念</h3>
+                <p>我以"安全、有用、诚实"为原则设计，旨在成为用户可信赖的智能伙伴，同时注重隐私保护和道德规范。</p>
+            </div>
+        </div>
+
+        <div class="capabilities">
+            <h2>我能做什么？</h2>
+            <div class="capability-list">
+                <div class="capability-item">回答问题</div>
+                <div class="capability-item">写作创作</div>
+                <div class="capability-item">代码编程</div>
+                <div class="capability-item">语言翻译</div>
+                <div class="capability-item">学习辅导</div>
+                <div class="capability-item">内容总结</div>
+                <div class="capability-item">创意构思</div>
+                <div class="capability-item">数据分析</div>
+                <div class="capability-item">学术研究</div>
+                <div class="capability-item">技术支持</div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>由 <span class="company">深度求索（DeepSeek）公司</span> 开发 | 当前版本：DeepSeek-R1</p>
+        <p>今天日期：2025年6月7日，星期六 | 随时为您提供智能服务</p>
+    </footer>
+</div>
+</body>
+</html>

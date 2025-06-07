@@ -69,6 +69,13 @@ func WithTimeout(timeout time.Duration) Option {
 	})
 }
 
+func WithAuthorization(token string) Option {
+	return Option(func(req *requestOption) error {
+		req.header["Authorization"] = fmt.Sprintf("Bearer %s", token)
+		return nil
+	})
+}
+
 func Request(method string, url string, opts ...Option) (ResultCode int, body []byte, err error) {
 	startTime := time.Now()
 	reqOpts := defaultRequestOption()

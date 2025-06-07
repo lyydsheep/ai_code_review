@@ -9,9 +9,14 @@ import (
 	"os"
 )
 
+// TODO 简化包装操作
 // 使用 zap 作为日志库
 
 var zapLogger *zap.Logger
+
+func init() {
+	InitLogger()
+}
 
 func InitLogger() {
 	// 创建一个适用于生产环境的编码器配置
