@@ -4,14 +4,14 @@ import (
 	"context"
 	"github.com/faiz/llm-code-review/api/request"
 	"github.com/faiz/llm-code-review/logic/infrastructure"
-	"github.com/faiz/llm-code-review/logic/infrastructure/mq"
+	"github.com/faiz/llm-code-review/logic/infrastructure/mq/producer"
 	"github.com/faiz/llm-code-review/logic/repository"
 )
 
 type WebHookServiceV1 struct {
 	UsrUserRepository repository.UsrUserRepository
 	Github            infrastructure.GithubClient
-	Kafka             mq.Client
+	Kafka             producer.Client
 }
 
 func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.HookRequest) error {
@@ -37,7 +37,7 @@ func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.Hook
 }
 
 func NewWebHookServiceV1(usrUserRepository repository.UsrUserRepository,
-	github infrastructure.GithubClient, kafka mq.Client) WebHookService {
+	github infrastructure.GithubClient, kafka producer.Client) WebHookService {
 	return &WebHookServiceV1{
 		UsrUserRepository: usrUserRepository,
 		Github:            github,
