@@ -4,6 +4,7 @@ var (
 	App   AppConfig
 	DB    DBConfig
 	Redis RedisConfig
+	Kafka KafkaConfig
 )
 
 type AppConfig struct {

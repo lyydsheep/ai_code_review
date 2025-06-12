@@ -54,6 +54,10 @@ func (l *logger) Error(msg string, kv ...any) {
 	l.log(zapcore.ErrorLevel, msg, kv...)
 }
 
+func (l *logger) Fatal(msg string, kv ...any) {
+	l.log(zapcore.FatalLevel, msg, kv...)
+}
+
 func (l *logger) log(level zapcore.Level, msg string, kv ...any) {
 	if ce := l.logger.Check(level, msg); ce != nil {
 		if len(kv) == 0 {

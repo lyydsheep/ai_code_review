@@ -12,9 +12,9 @@ import (
 func TestProduce(t *testing.T) {
 	svc := producer.NewMessageProducer(producer.ProducerConfig{
 		Type:    "kafka",
-		Brokers: []string{":9092"},
+		Brokers: []string{"localhost:9092"},
 	})
-	err := svc.Send(context.Background(), "topic-test", "hello world")
+	err := svc.Send(context.Background(), "topic-test", []byte("hello world"))
 	if err != nil {
 		log.Fatal(err)
 	}

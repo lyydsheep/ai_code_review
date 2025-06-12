@@ -6,17 +6,26 @@ import (
 )
 
 type PriorityHandler struct {
-	messages chan *sarama.ConsumerMessage
-	finished chan struct{}
+	Topic    string
+	Messages chan *sarama.ConsumerMessage
+	Finished chan struct{}
 	consumerGroupHandler
+}
+
+func NewPriorityHandler(topic string) *PriorityHandler {
+	return &PriorityHandler{
+		Topic:    topic,
+		Messages: make(chan *sarama.ConsumerMessage),
+		Finished: make(chan struct{}),
+	}
 }
 
 func (h *PriorityHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	for message := range claim.Messages() {
 		// 将消息发送至指定优先级的 channel 中
-		h.messages <- message
+		h.Messages <- message
 		// 等待消息处理完成
-		<-h.finished
+		<-h.Finished
 		session.MarkMessage(message, "")
 		session.Commit()
 	}

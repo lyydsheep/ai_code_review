@@ -21,6 +21,6 @@ func NewMessageProducer(config ProducerConfig) Client {
 }
 
 type Client interface {
-	Send(ctx context.Context, destination string, message string) error
+	Send(ctx context.Context, destination string, message []byte) error
 	Close() bool
 }

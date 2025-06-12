@@ -12,7 +12,7 @@ type KafkaProducer struct {
 	Client sarama.Client
 }
 
-func (k *KafkaProducer) Send(ctx context.Context, destination string, message string) error {
+func (k *KafkaProducer) Send(ctx context.Context, destination string, message []byte) error {
 	producer, err := sarama.NewSyncProducerFromClient(k.Client)
 	if err != nil {
 		log.New(ctx).Error("Failed to create producer: %v", "err", err)
@@ -21,7 +21,7 @@ func (k *KafkaProducer) Send(ctx context.Context, destination string, message st
 	defer producer.Close()
 	msg := &sarama.ProducerMessage{
 		Topic: destination,
-		Value: sarama.StringEncoder(message),
+		Value: sarama.ByteEncoder(message),
 	}
 	partition, offset, err := producer.SendMessage(msg)
 	if err != nil {

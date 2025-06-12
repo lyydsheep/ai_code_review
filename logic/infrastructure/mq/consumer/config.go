@@ -13,3 +13,12 @@ func NewConfig() *sarama.Config {
 	config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategyRange()}
 	return config
 }
+
+func NewConsumerGroup(addrs []string, groupID string) sarama.ConsumerGroup {
+	config := NewConfig()
+	consumerGroup, err := sarama.NewConsumerGroup(addrs, groupID, config)
+	if err != nil {
+		panic(err)
+	}
+	return consumerGroup
+}
