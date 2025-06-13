@@ -9,6 +9,7 @@ func NewConfig() *sarama.Config {
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 	config.Consumer.Offsets.Initial = sarama.OffsetOldest
+	// 手动提交
 	config.Consumer.Offsets.AutoCommit.Enable = false
 	config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategyRange()}
 	return config

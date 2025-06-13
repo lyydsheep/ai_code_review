@@ -1,9 +1,10 @@
 version: "0.1"
 database:
-  dsn: "root:root@tcp(host:3306)/dev?charset=utf8mb4&parseTime=true&loc=Local"
+  dsn: "root:root@tcp(localhost:33060)/code_review?charset=utf8mb4&parseTime=true&loc=Local"
   db: "mysql"
   tables:
     - "usr_users"
+    - "push_info"
   outPath: "../dal/dao"
   # query code file name, default: gen.go
   outFile: ""
