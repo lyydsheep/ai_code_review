@@ -2,6 +2,7 @@ package consumer
 
 import (
 	"github.com/IBM/sarama"
+	"github.com/faiz/llm-code-review/event"
 	"log"
 )
 
@@ -18,6 +19,15 @@ func NewPriorityHandler(topic string) *PriorityHandler {
 		Messages: make(chan *sarama.ConsumerMessage),
 		Finished: make(chan struct{}),
 	}
+}
+
+// 目前只支持低、高优先级
+func NewMQHandlers() []*PriorityHandler {
+	handlers := make([]*PriorityHandler, 0)
+	for _, topic := range []string{event.LowPriority, event.HighPriority} {
+		handlers = append(handlers, NewPriorityHandler(topic))
+	}
+	return handlers
 }
 
 func (h *PriorityHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {

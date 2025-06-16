@@ -43,7 +43,7 @@ type DeepseekResponse struct {
 }
 
 // NewDeepseekStrategy 创建一个新的 Deepseek 调用策略
-func NewDeepSeekSender() SenderStrategy {
+func newDeepSeekSender() SenderStrategy {
 	return func(ctx context.Context, diffInfo string) (string, error) {
 		req := DeepseekRequest{
 			Model: "deepseek-chat",

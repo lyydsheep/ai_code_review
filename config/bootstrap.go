@@ -12,6 +12,9 @@ var configs embed.FS
 
 func InitConfig() {
 	env := os.Getenv("env")
+	if env == "" {
+		env = "dev"
+	}
 	vp := viper.New()
 	configStream, err := configs.ReadFile("application." + env + ".yaml")
 	if err != nil {
@@ -28,6 +31,12 @@ func InitConfig() {
 		panic(err)
 	}
 	if err = vp.UnmarshalKey("redis", &Redis); err != nil {
+		panic(err)
+	}
+	if err = vp.UnmarshalKey("kafka", &Kafka); err != nil {
+		panic(err)
+	}
+	if err = vp.UnmarshalKey("email", &Email); err != nil {
 		panic(err)
 	}
 }

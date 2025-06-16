@@ -5,13 +5,13 @@ import (
 	"time"
 )
 
-type ProducerConfig struct {
+type Config struct {
 	Type    string        // mq 类型: "kafka", "rabbitmq"
 	Brokers []string      // broker 地址列表
 	Timeout time.Duration // 超时设置
 }
 
-func NewMessageProducer(config ProducerConfig) Client {
+func NewMessageProducer(config Config) Client {
 	switch config.Type {
 	case "kafka":
 		return newKafkaProducer(config)

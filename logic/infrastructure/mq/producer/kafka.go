@@ -72,7 +72,7 @@ func newConfig(options ...Option) *sarama.Config {
 	return conf
 }
 
-func newKafkaProducer(proConf ProducerConfig) Client {
+func newKafkaProducer(proConf Config) Client {
 	if proConf.Timeout <= 0 {
 		proConf.Timeout = 10 * time.Second
 	}

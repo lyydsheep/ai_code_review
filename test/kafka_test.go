@@ -10,7 +10,7 @@ import (
 )
 
 func TestProduce(t *testing.T) {
-	svc := producer.NewMessageProducer(producer.ProducerConfig{
+	svc := producer.NewMessageProducer(producer.Config{
 		Type:    "kafka",
 		Brokers: []string{"localhost:9092"},
 	})

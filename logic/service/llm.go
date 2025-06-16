@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/IBM/sarama"
+	"github.com/faiz/llm-code-review/common/enum"
 	log "github.com/faiz/llm-code-review/common/logger"
 	"github.com/faiz/llm-code-review/config"
 	"github.com/faiz/llm-code-review/dal/model"
@@ -15,36 +16,39 @@ import (
 	"github.com/faiz/llm-code-review/logic/repository"
 	"github.com/gomarkdown/markdown"
 	"golang.org/x/sync/errgroup"
+	"gopkg.in/gomail.v2"
 	"gorm.io/gorm"
 	"time"
 )
 
-type Consumer struct {
-	LLMClient    llm.Sender
+type LLMService struct {
+	LLMClient    *llm.Client
 	MQHandlers   []*consumer.PriorityHandler
 	Channels     map[string]chan *sarama.ConsumerMessage
 	Finishes     map[string]chan struct{}
 	PushInfoRepo repository.PushInfoRepository
+	UserRepo     repository.UsrUserRepository
 }
 
-func NewLLMService(client llm.Sender, repo repository.PushInfoRepository, mqHandlers ...*consumer.PriorityHandler) *Consumer {
+// NewLLMService topic必须是 high、middle、low 中的一个
+func NewLLMService(client *llm.Client, repo repository.PushInfoRepository, userRepo repository.UsrUserRepository, mqHandlers ...*consumer.PriorityHandler) *LLMService {
 	channels := make(map[string]chan *sarama.ConsumerMessage)
 	finish := make(map[string]chan struct{})
 	for _, handler := range mqHandlers {
 		channels[handler.Topic] = handler.Messages
 		finish[handler.Topic] = handler.Finished
 	}
-	return &Consumer{LLMClient: client, MQHandlers: mqHandlers, Channels: channels, Finishes: finish, PushInfoRepo: repo}
+	return &LLMService{LLMClient: client, MQHandlers: mqHandlers, Channels: channels, Finishes: finish, PushInfoRepo: repo, UserRepo: userRepo}
 }
 
-func (svc *Consumer) Run(ctx context.Context) {
+func (svc *LLMService) Run(ctx context.Context) {
 	log.New(ctx).Info("starting consumer")
-	svc.startChannels(ctx, svc.MQHandlers)
-	svc.startConsumers(ctx, svc.Channels, svc.Finishes)
+	go svc.startChannels(ctx, svc.MQHandlers)
+	go svc.startConsumers(ctx, svc.Channels, svc.Finishes)
 }
 
 // 添加一个Stop方法用于清理资源
-func (svc *Consumer) Stop() {
+func (svc *LLMService) Stop() {
 	for topic, finish := range svc.Finishes {
 		select {
 		case finish <- struct{}{}:
@@ -55,7 +59,7 @@ func (svc *Consumer) Stop() {
 	}
 }
 
-func (svc *Consumer) startConsumers(ctx context.Context, messages map[string]chan *sarama.ConsumerMessage, finish map[string]chan struct{}) {
+func (svc *LLMService) startConsumers(ctx context.Context, messages map[string]chan *sarama.ConsumerMessage, finish map[string]chan struct{}) {
 	log.New(ctx).Info("starting consumer service")
 	for {
 		// 依据时间片对不同的handler 进行处理
@@ -78,9 +82,8 @@ func (svc *Consumer) startConsumers(ctx context.Context, messages map[string]cha
 	}
 }
 
-func (svc *Consumer) consumeEvent(ctx context.Context, msg *sarama.ConsumerMessage, finish chan struct{}) {
+func (svc *LLMService) consumeEvent(ctx context.Context, msg *sarama.ConsumerMessage, finish chan struct{}) {
 	log.New(ctx).Info("consuming message", "topic", msg.Topic, "partition", msg.Partition, "offset", msg.Offset)
-	// TODO 待实现
 	// 接受消息
 	var pushEvent event.Push
 	if err := json.NewDecoder(bytes.NewReader(msg.Value)).Decode(&pushEvent); err != nil {
@@ -107,10 +110,15 @@ func (svc *Consumer) consumeEvent(ctx context.Context, msg *sarama.ConsumerMessa
 		}
 		log.New(ctx).Info("message status is init. try to send again")
 	}
+	// 完成消费
 	finish <- struct{}{}
 	log.New(ctx).Debug("insert message success", "pushEvent", pushEvent)
 
 	// 向 llm 发送请求，获取报告
+	if err = svc.LLMClient.SetSender(ctx, enum.DEEPSEEK); err != nil {
+		log.New(ctx).Error("set sender failed", "err", err)
+		return
+	}
 	report, err := svc.LLMClient.Send(ctx, pushEvent.Diff)
 	if err != nil {
 		log.New(ctx).Error("send message to llm failed", "err", err)
@@ -123,11 +131,24 @@ func (svc *Consumer) consumeEvent(ctx context.Context, msg *sarama.ConsumerMessa
 		// TODO 做一个 replace 操作
 	}
 	// 将 markdown 格式转换为 html 格式，并准备发送邮件
-	html := markdown.ToHTML([]byte(report), nil, nil)
-	_ = html // TODO: 使用 html 内容发送邮件给相关用户
+	html := string(markdown.ToHTML([]byte(report), nil, nil))
 
-	// TODO
-	// 发送邮件
+	user, err := svc.UserRepo.GetUserByUsername(ctx, pushInfo.Username)
+	if err != nil {
+		log.New(ctx).Error("get user failed", "err", err)
+		return
+	}
+	log.New(ctx).Debug("get user info", "user", user)
+	sendMsg(user.Email, html)
+}
+
+func sendMsg(to, content string) {
+	m := gomail.NewMessage()
+	m.SetHeader("From", config.Email.Username)
+	m.SetHeader("Subject", "Your Code Review Report")
+	m.SetHeader("To", to)
+	m.SetBody("text/html", content)
+	ch <- m
 }
 
 func eventToModel(push event.Push) model.PushInfo {
@@ -140,7 +161,7 @@ func eventToModel(push event.Push) model.PushInfo {
 	}
 }
 
-func (svc *Consumer) startChannels(ctx context.Context, handlers []*consumer.PriorityHandler) {
+func (svc *LLMService) startChannels(ctx context.Context, handlers []*consumer.PriorityHandler) {
 	log.New(ctx).Info("starting consumer channels")
 	// 获取  consumer group
 	cg := consumer.NewConsumerGroup(config.Kafka.Brokers, "llm-code-review-consumer-group")
@@ -158,8 +179,8 @@ func (svc *Consumer) startChannels(ctx context.Context, handlers []*consumer.Pri
 	}
 }
 
-func (svc *Consumer) consume(ctx context.Context, cg sarama.ConsumerGroup, handler *consumer.PriorityHandler) error {
-	log.New(ctx).Info("starting consumer group", "topic", handler.Topic)
+func (svc *LLMService) consume(ctx context.Context, cg sarama.ConsumerGroup, handler *consumer.PriorityHandler) error {
+	log.New(ctx).Info("starting consumer", "topic", handler.Topic)
 	if err := cg.Consume(ctx, []string{handler.Topic}, handler); err != nil {
 		log.New(ctx).Error("consume error: %v", err)
 		return err

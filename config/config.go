@@ -1,15 +1,19 @@
 package config
 
+import "time"
+
 var (
 	App   AppConfig
 	DB    DBConfig
 	Redis RedisConfig
 	Kafka KafkaConfig
+	Email EmailConfig
 )
 
 type AppConfig struct {
 	Env  string `mapstructure:"env"`
 	Name string `mapstructure:"name"`
+	Host string `mapstructure:"host"`
 	Log  struct {
 		Path    string `mapstructure:"path"`
 		MaxSize int    `mapstructure:"maxSize"`
@@ -43,4 +47,10 @@ type RedisConfig struct {
 
 type KafkaConfig struct {
 	Brokers []string `mapstructure:"brokers"`
+	Timeout time.Duration
+}
+
+type EmailConfig struct {
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
 }

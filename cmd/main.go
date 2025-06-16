@@ -21,8 +21,8 @@ func main() {
 	if config.App.Env == enum.ModePROD {
 		gin.SetMode(gin.ReleaseMode)
 	}
-	g := InitializeApp()
-	if err := g.Run("localhost:8080"); err != nil {
+	app := InitializeApp()
+	if err := app.Run(config.App.Host); err != nil {
 		panic(err)
 	}
 }

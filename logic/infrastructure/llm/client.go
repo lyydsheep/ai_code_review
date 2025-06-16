@@ -22,7 +22,7 @@ func (c *Client) SetSender(ctx context.Context, category string) error {
 	switch category {
 	case enum.DEEPSEEK:
 		log.New(ctx).Info("set deepseek sender")
-		c.sender = NewDeepSeekSender()
+		c.sender = newDeepSeekSender()
 	default:
 		err := fmt.Errorf("unsupported sender category: %s", category)
 		log.New(ctx).Error("failed to set sender", "error", err)
