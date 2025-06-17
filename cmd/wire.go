@@ -6,7 +6,6 @@ import (
 	"github.com/faiz/llm-code-review/api/handler"
 	"github.com/faiz/llm-code-review/api/router"
 	"github.com/faiz/llm-code-review/common/middleware"
-	"github.com/faiz/llm-code-review/config"
 	"github.com/faiz/llm-code-review/dal/cache"
 	"github.com/faiz/llm-code-review/dal/dao"
 	"github.com/faiz/llm-code-review/logic/infrastructure"
@@ -23,8 +22,7 @@ func InitializeApp() *App {
 		router.RegisterRoutersAndMiddleware, consumer.NewMQHandlers, service.NewLLMService,
 		middleware.GetHandlerFunc, handler.NewWebhookHandler, llm.NewClient,
 		service.NewWebHookServiceV1, repository.NewUsrUserRepositoryV1, repository.NewPushInfoRepositoryV1,
-		infrastructure.NewDefaultGithubClient, producer.NewMessageProducer, wire.Struct(new(producer.Config), "*"),
-		wire.Value("kafka"), wire.Value(config.Kafka.Brokers), wire.Value(config.Kafka.Timeout),
+		infrastructure.NewDefaultGithubClient, producer.NewMessageProducer, producer.NewKafkaConfig,
 		cache.NewMemCache, dao.NewQuery)
 
 	return nil

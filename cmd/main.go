@@ -4,7 +4,6 @@ import (
 	"github.com/faiz/llm-code-review/common/enum"
 	log "github.com/faiz/llm-code-review/common/logger"
 	"github.com/faiz/llm-code-review/config"
-	"github.com/faiz/llm-code-review/dal/cache"
 	"github.com/faiz/llm-code-review/dal/dao"
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +11,6 @@ import (
 func init() {
 	config.InitConfig()
 	log.InitLogger()
-	cache.RedisInit()
 	dao.InitGormLogger()
 	dao.InitDB()
 }

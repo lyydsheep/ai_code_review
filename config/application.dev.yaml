@@ -11,13 +11,13 @@ app:
 database:
   master:
     type: "mysql"
-    dsn: "root:@tcp(dbprovider.ap-northeast-1.clawcloudrun.com:34121)/dev?charset=utf8mb4&parseTime=True&loc=Local"
+    dsn: "root:root@tcp(localhost:33060)/code_review?charset=utf8mb4&parseTime=True&loc=Local"
     maxOpen: 100
     maxIdle: 10
     maxLifeTime: 60
   slave:
     type: "mysql"
-    dsn: "root:@tcp(dbprovider.ap-northeast-1.clawcloudrun.com:34121)/dev?charset=utf8mb4&parseTime=True&loc=Local"
+    dsn: "root:root@tcp(localhost:33060)/code_review?charset=utf8mb4&parseTime=True&loc=Local"
     maxOpen: 100
     maxIdle: 10
     maxLifeTime: 60
@@ -27,4 +27,4 @@ redis:
   poolSize: 10
   db: 0
 kafka:
-  brokers: [ "your-kafka-broker-host:9092"]
+  brokers: [ "localhost:9092"]
