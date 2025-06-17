@@ -30,3 +30,7 @@ create table push_info
 
 create unique index push_info_event_id_uindex
     on push_info (event_id);
+
+alter table push_info
+    modify event_id varchar(64) not null comment '事件唯一 ID';
+

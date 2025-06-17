@@ -26,7 +26,7 @@ func (client *DefaultGithubClient) GetDiff(ctx context.Context, user model.UsrUs
 	token := string(tokenBytes)
 
 	// 获取 compare 信息
-	respCode, respBody, err := httptool.Get(ctx, joinURL(hook.UserName, hook.Repository, hook.Compare),
+	respCode, respBody, err := httptool.Get(ctx, joinURL(hook.Repository.Owner.Name, hook.Repository.Name, hook.Compare),
 		httptool.WithHeaders(map[string]string{
 			"Accept":               "application/vnd.github.diff",
 			"Authorization":        fmt.Sprintf("Bearer %s", token),

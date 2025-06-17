@@ -27,7 +27,7 @@ func (h *WebhookHandler) ProcessHook(ctx *gin.Context) {
 	}
 	// service 逻辑
 	if err := h.svc.ProcessHook(ctx, &req); err != nil {
-		log.New(ctx).Error("Failed to process hook: %v", err)
+		log.New(ctx).Error("failed to process hook.", "err", err)
 		app.NewResponse(ctx).Error(err)
 		return
 	}

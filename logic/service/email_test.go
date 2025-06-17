@@ -8,7 +8,7 @@ import (
 )
 
 func TestEmail(t *testing.T) {
-	ListenAndSend()
+	//ListenAndSend()
 	m := gomail.NewMessage()
 	m.SetHeader("From", os.Getenv("username"))
 	m.SetHeader("Subject", "TestEmail")

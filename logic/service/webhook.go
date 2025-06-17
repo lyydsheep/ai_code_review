@@ -10,9 +10,6 @@ import (
 	"github.com/faiz/llm-code-review/logic/infrastructure"
 	"github.com/faiz/llm-code-review/logic/infrastructure/mq/producer"
 	"github.com/faiz/llm-code-review/logic/repository"
-	"github.com/google/uuid"
-	"strings"
-	"time"
 )
 
 type WebHookServiceV1 struct {
@@ -23,7 +20,7 @@ type WebHookServiceV1 struct {
 
 func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.HookRequest) error {
 	// 查表获取 user 信息
-	user, err := svc.UsrUserRepository.GetUserByUsername(ctx, hook.UserName)
+	user, err := svc.UsrUserRepository.GetUserByUsername(ctx, hook.HeadCommit.Committer.Username)
 	if err != nil {
 		return err
 	}
@@ -34,14 +31,13 @@ func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.Hook
 	}
 
 	// 生成唯一 ID，创建 push 消息
-	id := strings.Replace(uuid.New().String(), "-", "", -1)
 	push := event.Push{
-		ID:         id,
-		Priority:   event.LowPriority,
+		ID:         hook.HeadCommit.Id,
+		Priority:   event.HighPriority,
 		Diff:       diff,
-		Repository: hook.Repository,
-		Time:       time.Now().UTC(),
-		Username:   hook.UserName,
+		Repository: hook.Repository.Name,
+		Time:       hook.HeadCommit.Timestamp,
+		Username:   hook.HeadCommit.Committer.Username,
 	}
 
 	msg, err := json.Marshal(push)
