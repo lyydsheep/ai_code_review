@@ -27,17 +27,13 @@ func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.Hook
 	if err != nil {
 		return err
 	}
-	log.New(ctx).Debug("get user info", "user", user)
 	// 获取 diff 信息
 	diff, err := svc.Github.GetDiff(ctx, user, *hook)
 	if err != nil {
 		return err
 	}
-	log.New(ctx).Debug("get diff info", "diff", diff)
 
-	// 发送给消费者
-	// TODO 根据用户类型 选择不同的队列
-	// 实现优先级机制
+	// 生成唯一 ID，创建 push 消息
 	id := strings.Replace(uuid.New().String(), "-", "", -1)
 	push := event.Push{
 		ID:         id,
@@ -53,10 +49,14 @@ func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.Hook
 		log.New(ctx).Error("Failed to marshal push: %v", "err", err)
 		return errcode.ErrServer.WithCause(err).AppendMsg("Failed to marshal push message")
 	}
-	if err = svc.Kafka.Send(ctx, "anonymous-code-review", msg); err != nil {
+
+	// 发送给消费者
+	// TODO 根据用户类型 选择不同的队列(topic)
+	if err = svc.Kafka.Send(ctx, "high", msg); err != nil {
 		log.New(ctx).Error("Failed to send message: %v", "err", err)
 		return err
 	}
+	log.New(ctx).Info("send message success")
 
 	return nil
 }

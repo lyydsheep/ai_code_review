@@ -13,6 +13,7 @@ type KafkaProducer struct {
 }
 
 func (k *KafkaProducer) Send(ctx context.Context, destination string, message []byte) error {
+	// TODO 维护长链接
 	producer, err := sarama.NewSyncProducerFromClient(k.Client)
 	if err != nil {
 		log.New(ctx).Error("Failed to create producer: %v", "err", err)

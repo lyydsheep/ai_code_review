@@ -19,7 +19,7 @@ type DefaultGithubClient struct {
 }
 
 func (client *DefaultGithubClient) GetDiff(ctx context.Context, user model.UsrUser, hook request.HookRequest) (string, error) {
-	tokenBytes, err := util.DecryptAES(user.Token, []byte("1234567890123456"))
+	tokenBytes, err := util.DecryptAES(user.Token, []byte(user.AesKey))
 	if err != nil {
 		return "", errcode.ErrServer.WithCause(err).AppendMsg("Failed to decrypt token")
 	}
