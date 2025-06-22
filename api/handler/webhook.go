@@ -21,16 +21,17 @@ func NewWebhookHandler(svc service.WebHookService) WebhookHandler {
 func (h *WebhookHandler) ProcessHook(ctx *gin.Context) {
 	var req request.HookRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		log.New(ctx).Error("Failed to bind JSON: %v", err)
+		log.New(ctx).Error("failed to bind JSON", "err", err)
 		app.NewResponse(ctx).Error(err)
 		return
 	}
+	log.New(ctx).Debug("get hook request", "request", req)
 	// service 逻辑
 	if err := h.svc.ProcessHook(ctx, &req); err != nil {
 		log.New(ctx).Error("failed to process hook.", "err", err)
 		app.NewResponse(ctx).Error(err)
 		return
 	}
-
+	log.New(ctx).Debug("process hook success")
 	app.NewResponse(ctx).SuccessOk()
 }

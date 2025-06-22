@@ -20,15 +20,19 @@ type WebHookServiceV1 struct {
 
 func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.HookRequest) error {
 	// 查表获取 user 信息
+	log.New(ctx).Debug("get user info.", "username", hook.HeadCommit.Committer.Username)
 	user, err := svc.UsrUserRepository.GetUserByUsername(ctx, hook.HeadCommit.Committer.Username)
 	if err != nil {
+		log.New(ctx).Error("get user failed", "err", err)
 		return err
 	}
+	log.New(ctx).Debug("get user info", "user", user)
 	// 获取 diff 信息
 	diff, err := svc.Github.GetDiff(ctx, user, *hook)
 	if err != nil {
 		return err
 	}
+	log.New(ctx).Debug("get diff info", "diff", diff)
 
 	// 生成唯一 ID，创建 push 消息
 	push := event.Push{
@@ -39,6 +43,7 @@ func (svc *WebHookServiceV1) ProcessHook(ctx context.Context, hook *request.Hook
 		Time:       hook.HeadCommit.Timestamp,
 		Username:   hook.HeadCommit.Committer.Username,
 	}
+	log.New(ctx).Debug("push message", "push", push)
 
 	msg, err := json.Marshal(push)
 	if err != nil {

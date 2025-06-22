@@ -19,11 +19,13 @@ func (k *KafkaProducer) Send(ctx context.Context, destination string, message []
 		log.New(ctx).Error("Failed to create producer: %v", "err", err)
 		return errcode.ErrServer.WithCause(err).AppendMsg("Failed to create producer")
 	}
+	log.New(ctx).Debug("new kafka producer successfully.")
 	defer producer.Close()
 	msg := &sarama.ProducerMessage{
 		Topic: destination,
 		Value: sarama.ByteEncoder(message),
 	}
+	log.New(ctx).Debug("send message to kafka", "msg", msg)
 	partition, offset, err := producer.SendMessage(msg)
 	if err != nil {
 		log.New(ctx).Error("Failed to send message: %v", "err", err)

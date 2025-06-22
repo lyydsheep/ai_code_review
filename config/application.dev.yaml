@@ -3,7 +3,7 @@ app:
   name: "llm-code-review"
   host: "0.0.0.0:37229"
   log:
-    path: "/path/to/your/log/file.log"
+    path: "/Users/lyydsheep/workspace/Go/projects/llm_code_review/log/file.log"
     maxSize: 100
     maxAge: 60
   pagination:

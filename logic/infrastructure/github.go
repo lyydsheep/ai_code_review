@@ -24,6 +24,7 @@ func (client *DefaultGithubClient) GetDiff(ctx context.Context, user model.UsrUs
 		return "", errcode.ErrServer.WithCause(err).AppendMsg("Failed to decrypt token")
 	}
 	token := string(tokenBytes)
+	log.New(ctx).Debug("get token.", "token", token)
 
 	// 获取 compare 信息
 	respCode, respBody, err := httptool.Get(ctx, joinURL(hook.Repository.Owner.Name, hook.Repository.Name, hook.Compare),
@@ -32,6 +33,7 @@ func (client *DefaultGithubClient) GetDiff(ctx context.Context, user model.UsrUs
 			"Authorization":        fmt.Sprintf("Bearer %s", token),
 			"X-GitHub-Api-Version": "2022-11-28",
 		}))
+	log.New(ctx).Debug("get diff info.", "code", respCode, "body", string(respBody))
 	if err != nil {
 		log.New(ctx).Error("Failed to get compare: %v", err)
 		return "", errcode.ErrServer.WithCause(err).AppendMsg("Failed to get compare")

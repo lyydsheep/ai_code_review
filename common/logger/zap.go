@@ -24,9 +24,11 @@ func InitLogger() {
 
 	// 设置时间编码方式为ISO8601格式，以提高日志的可读性和国际化
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 
 	// 基于上述配置创建一个JSON编码器，用于生成JSON格式的日志
 	encoder := zapcore.NewJSONEncoder(encoderConfig)
+	encoder = zapcore.NewConsoleEncoder(encoderConfig)
 	fileWriteSyncer, err := getFileLogWriter()
 	if err != nil {
 		panic(err)
