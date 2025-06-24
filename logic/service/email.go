@@ -16,7 +16,6 @@ func ListenAndSend(ctx context.Context) {
 	log.New(ctx).Info("starting email service")
 	go func() {
 		defer close(ch)
-		// TODO username 和 password 从环境变量中读取
 		d := gomail.NewDialer("smtp.qq.com", 465, config.Email.Username, config.Email.Password)
 
 		var s gomail.SendCloser
@@ -41,12 +40,12 @@ func ListenAndSend(ctx context.Context) {
 				}
 				log.New(ctx).Info("sent email", "message", m)
 			// Close the connection to the SMTP server if no email was sent in
-			// the last 30 seconds.
-			case <-time.After(30 * time.Second):
-				log.New(ctx).Info("closing email connection")
+			// the last 10 seconds.
+			case <-time.After(10 * time.Second):
 				if open {
+					log.New(ctx).Info("closing email connection")
 					if err := s.Close(); err != nil {
-						panic(err)
+						log.New(ctx).Error("failed to close email connection", "error", err)
 					}
 					open = false
 				}

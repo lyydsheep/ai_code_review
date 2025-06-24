@@ -114,6 +114,7 @@ func Request(method string, url string, opts ...Option) (ResultCode int, body []
 			"traceId", reqOpts.ctx.Value("traceId"))
 	}
 	data, err := io.ReadAll(resp.Body)
+	log.New(reqOpts.ctx).Debug("request_response", "url", url, "data", string(data), "traceId", reqOpts.ctx.Value("traceId"))
 	if err != nil {
 		return
 	}

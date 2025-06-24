@@ -66,6 +66,7 @@ func newDeepSeekSender() SenderStrategy {
 			return "", errcode.ErrServer.WithCause(err).AppendMsg("marshal request failed")
 		}
 
+		log.New(ctx).Info("begin deepseek request")
 		resCode, body, err := httptool.Post(ctx, jsonData, deepseekAPI,
 			httptool.WithAuthorization(os.Getenv("DEEPSEEK_API_KEY")),
 			httptool.WithTimeout(time.Minute*30))
