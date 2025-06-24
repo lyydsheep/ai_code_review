@@ -9,6 +9,7 @@ import (
 	"github.com/faiz/llm-code-review/common/util"
 	"github.com/faiz/llm-code-review/common/util/httptool"
 	"github.com/faiz/llm-code-review/dal/model"
+	"strings"
 )
 
 type GithubClient interface {
@@ -27,7 +28,13 @@ func (client *DefaultGithubClient) GetDiff(ctx context.Context, user model.UsrUs
 	log.New(ctx).Debug("get token.", "token", token)
 
 	// 获取 compare 信息
-	respCode, respBody, err := httptool.Get(ctx, joinURL(hook.Repository.Owner.Name, hook.Repository.Name, hook.Compare),
+	strs := strings.Split(hook.Compare, "/")
+	if len(strs) == 0 {
+		log.New(ctx).Error("wrong compare info", "hook", hook)
+		return "", errcode.ErrParams.Clone().AppendMsg("wrong compare info")
+	}
+	compare := strs[len(strs)-1]
+	respCode, respBody, err := httptool.Get(ctx, joinURL(hook.Repository.Owner.Name, hook.Repository.Name, compare),
 		httptool.WithHeaders(map[string]string{
 			"Accept":               "application/vnd.github.diff",
 			"Authorization":        fmt.Sprintf("Bearer %s", token),

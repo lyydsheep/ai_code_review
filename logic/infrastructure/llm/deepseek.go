@@ -50,12 +50,11 @@ func newDeepSeekSender() SenderStrategy {
 			Messages: []Message{
 				{
 					Role:    "system",
-					Content: "You are a helpful assistant.",
+					Content: systemPrompt,
 				},
 				{
-					Role: "user",
-					// TODO 需要一些 prompt 修饰
-					Content: diffInfo,
+					Role:    "user",
+					Content: userPrompt + diffInfo,
 				},
 			},
 			Stream: false,
@@ -68,7 +67,7 @@ func newDeepSeekSender() SenderStrategy {
 		}
 
 		resCode, body, err := httptool.Post(ctx, jsonData, deepseekAPI,
-			httptool.WithAuthorization(os.Getenv("DEEPKEY")),
+			httptool.WithAuthorization(os.Getenv("DEEPSEEK_API_KEY")),
 			httptool.WithTimeout(time.Minute*30))
 
 		if resCode != http.StatusOK {
